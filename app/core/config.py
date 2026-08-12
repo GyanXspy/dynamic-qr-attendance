@@ -31,9 +31,13 @@ class Settings(BaseSettings):
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
     def resolve_database_url(cls, v: str) -> str:
-        """Handle Render's postgres:// URLs by converting them to asyncpg."""
-        if v and v.startswith("postgres://"):
+        """Handle Render's postgres(ql):// URLs by converting them to asyncpg."""
+        if not v:
+            return v
+        if v.startswith("postgres://"):
             return v.replace("postgres://", "postgresql+asyncpg://", 1)
+        if v.startswith("postgresql://"):
+            return v.replace("postgresql://", "postgresql+asyncpg://", 1)
         return v
 
     # JWT Authentication
