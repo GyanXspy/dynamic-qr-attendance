@@ -318,16 +318,6 @@ export default function LoginPage() {
             </button>
           </p>
 
-          <p className="text-center text-xs mt-4">
-            <button
-              type="button"
-              onClick={() => navigate('/admin/login')}
-              className="text-white/30 hover:text-white/60 transition-colors"
-            >
-              Admin Portal Login
-            </button>
-          </p>
-
         </div>
       </div>
     </div>

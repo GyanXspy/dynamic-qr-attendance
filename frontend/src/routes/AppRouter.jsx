@@ -7,6 +7,7 @@ import StudentLayout from '../layouts/StudentLayout';
 
 /* Auth */
 import LoginPage from '../pages/auth/LoginPage';
+import LandingPage from '../pages/public/LandingPage';
 
 /* Protected route */
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -32,13 +33,26 @@ import AttendanceHistory from '../pages/student/AttendanceHistory';
 /* Shared */
 import Profile from '../pages/shared/Profile';
 
-function AuthRedirect() {
+function LandingRedirect() {
   const { isAuthenticated, user } = useAuth();
-  if (!isAuthenticated) return <LoginPage />;
-  if (user?.role === 'ADMIN') return <Navigate to="/admin/dashboard" replace />;
-  return user?.role === 'TEACHER'
-    ? <Navigate to="/teacher/dashboard" replace />
-    : <Navigate to="/student/dashboard" replace />;
+  if (isAuthenticated) {
+    if (user?.role === 'ADMIN') return <Navigate to="/admin/dashboard" replace />;
+    return user?.role === 'TEACHER'
+      ? <Navigate to="/teacher/dashboard" replace />
+      : <Navigate to="/student/dashboard" replace />;
+  }
+  return <LandingPage />;
+}
+
+function LoginRedirect() {
+  const { isAuthenticated, user } = useAuth();
+  if (isAuthenticated) {
+    if (user?.role === 'ADMIN') return <Navigate to="/admin/dashboard" replace />;
+    return user?.role === 'TEACHER'
+      ? <Navigate to="/teacher/dashboard" replace />
+      : <Navigate to="/student/dashboard" replace />;
+  }
+  return <LoginPage />;
 }
 
 function AdminAuthRedirect() {
@@ -53,7 +67,8 @@ export default function AppRouter() {
     <BrowserRouter>
       <Routes>
         {/* Public */}
-        <Route path="/" element={<AuthRedirect />} />
+        <Route path="/" element={<LandingRedirect />} />
+        <Route path="/login" element={<LoginRedirect />} />
         <Route path="/admin/login" element={<AdminAuthRedirect />} />
 
         {/* Admin routes */}
