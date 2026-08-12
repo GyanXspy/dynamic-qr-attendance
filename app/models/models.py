@@ -42,8 +42,8 @@ class AttendanceStatus(str, enum.Enum):
 
 
 def utcnow() -> datetime:
-    """Return current UTC time as timezone-naive."""
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    """Return current UTC time as timezone-aware."""
+    return datetime.now(timezone.utc)
 
 
 class User(Base):
