@@ -17,7 +17,7 @@ services:
       - key: JWT_SECRET_KEY
         generateValue: true
       - key: CORS_ORIGINS
-        value: '["https://dynamic-qr-frontend.onrender.com"]'
+        value: '["*"]'
       - key: ADMIN_EMAIL
         sync: false
       - key: ADMIN_PASSWORD
@@ -42,7 +42,10 @@ services:
     staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
-        value: https://dynamic-qr-backend.onrender.com
+        fromService:
+          type: web
+          name: dynamic-qr-backend
+          envVarKey: RENDER_EXTERNAL_URL
 
 databases:
   - name: dynamic-qr-db
