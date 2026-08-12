@@ -12,15 +12,17 @@
 import axios from 'axios';
 
 let baseUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL;
-if (!baseUrl) {
-  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+
+// Unconditionally force the correct backend URL in production to bypass any bad env vars
+if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+  baseUrl = 'https://dynamic-qr-backend-n0ng.onrender.com/api/v1';
+} else {
+  // Local development fallback
+  if (!baseUrl) {
     baseUrl = 'http://localhost:8000/api/v1';
-  } else {
-    baseUrl = 'https://dynamic-qr-backend-n0ng.onrender.com/api/v1';
+  } else if (!baseUrl.endsWith('/api/v1')) {
+    baseUrl = `${baseUrl.replace(/\/$/, '')}/api/v1`;
   }
-}
-if (baseUrl && !baseUrl.endsWith('/api/v1')) {
-  baseUrl = `${baseUrl.replace(/\/$/, '')}/api/v1`;
 }
 
 const api = axios.create({
