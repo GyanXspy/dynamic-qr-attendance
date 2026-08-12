@@ -148,8 +148,7 @@ class AttendanceService:
                 session_id=data.session_id,
             )
 
-        # Send email notification asynchronously
-        import asyncio
+        # Send email notification synchronously to prevent task cancellation
         from app.services.email_service import get_email_service
         email_service = get_email_service()
         
@@ -158,14 +157,12 @@ class AttendanceService:
         marked_time_str = attendance.marked_at.strftime("%I:%M %p")
         marked_date_str = attendance.marked_at.strftime("%Y-%m-%d")
         
-        asyncio.create_task(
-            email_service.send_attendance_confirmation(
-                student_name=student.name,
-                student_email=student.email,
-                class_name=class_name,
-                attendance_date=marked_date_str,
-                attendance_time=marked_time_str,
-            )
+        await email_service.send_attendance_confirmation(
+            student_name=student.name,
+            student_email=student.email,
+            class_name=class_name,
+            attendance_date=marked_date_str,
+            attendance_time=marked_time_str,
         )
 
         return AttendanceMarkResponse(
