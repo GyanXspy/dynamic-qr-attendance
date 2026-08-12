@@ -27,7 +27,7 @@ config = context.config
 # Override sqlalchemy.url from app settings
 settings = get_settings()
 # Convert async URL to sync for Alembic migrations
-sync_url = settings.DATABASE_URL.replace("+aiosqlite", "").replace("+aiomysql", "").replace("+asyncpg", "")
+sync_url = settings.DATABASE_URL.replace("+aiosqlite", "").replace("+aiomysql", "+pymysql").replace("+asyncpg", "")
 config.set_main_option("sqlalchemy.url", sync_url)
 
 # Interpret the config file for Python logging.
