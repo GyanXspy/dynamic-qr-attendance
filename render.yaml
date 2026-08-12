@@ -6,6 +6,7 @@ services:
   - type: web
     name: dynamic-qr-backend
     runtime: python
+    plan: free
     rootDir: .
     buildCommand: pip install -r requirements.txt
     preDeployCommand: alembic upgrade head && python create_admin.py
@@ -49,3 +50,4 @@ databases:
   - name: dynamic-qr-db
     databaseName: attendance
     user: attendance_user
+    plan: free
