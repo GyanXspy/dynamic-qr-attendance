@@ -11,7 +11,14 @@
 
 import axios from 'axios';
 
-let baseUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
+let baseUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL;
+if (!baseUrl) {
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    baseUrl = 'http://localhost:8000/api/v1';
+  } else {
+    baseUrl = 'https://dynamic-qr-backend-n0ng.onrender.com/api/v1';
+  }
+}
 if (baseUrl && !baseUrl.endsWith('/api/v1')) {
   baseUrl = `${baseUrl.replace(/\/$/, '')}/api/v1`;
 }
