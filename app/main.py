@@ -134,9 +134,43 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Unconditionally allow all origins
     allow_credentials=False,
-    allow_methods=["*"],  # Allow all methods
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],  # All methods (GET, POST, PUT, DELETE, OPTIONS, etc)
+    allow_headers=["*"],  # All headers
 )
+
+@app.get("/api/v1/test-email")
+async def test_email(email: str):
+    from app.core.config import get_settings
+    settings = get_settings()
+    
+    config_status = {
+        "is_configured": settings.is_email_configured,
+        "host": settings.SMTP_HOST,
+        "port": settings.SMTP_PORT,
+        "username": settings.SMTP_USERNAME,
+        "use_tls": settings.SMTP_USE_TLS
+    }
+    
+    if not settings.is_email_configured:
+        return {"success": False, "message": "Email not configured", "config": config_status}
+        
+    try:
+        from app.services.email_service import SMTPEmailService
+        svc = SMTPEmailService()
+        success = await svc.send_attendance_confirmation(
+            student_name="Test User",
+            student_email=email,
+            class_name="Test Class",
+            attendance_date="2026-08-12",
+            attendance_time="10:00 AM"
+        )
+        if success:
+            return {"success": True, "message": "Email dispatched! Check your inbox.", "config": config_status}
+        else:
+            return {"success": False, "message": "Email failed to send. Check Render logs for the traceback.", "config": config_status}
+    except Exception as e:
+        import traceback
+        return {"success": False, "error": str(e), "trace": traceback.format_exc(), "config": config_status}
 
 # Security headers
 app.add_middleware(SecurityHeadersMiddleware)
