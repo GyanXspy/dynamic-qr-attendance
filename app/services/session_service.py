@@ -97,7 +97,8 @@ class SessionService:
         session.end_time = now + original_duration
         session.status = SessionStatus.ACTIVE
 
-        session = await self.session_repo.update_status(session_id, SessionStatus.ACTIVE)
+        await self.session_repo.db.commit()
+        await self.session_repo.db.refresh(session)
         return SessionResponse.model_validate(session)
 
     async def end_session(
